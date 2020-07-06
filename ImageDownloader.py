@@ -51,7 +51,7 @@ class Downloader:
 		    print()  
 
 if __name__ == '__main__':
-	downloader = Downloader('Items.txt','Data')
+	downloader = Downloader('Items.txt','Data_Raw')
 	downloader.download_images(3)
 
 
