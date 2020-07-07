@@ -1,14 +1,21 @@
-from ImageDownloader import Downloader 
-from ImageStandardizer import Standardizer 
-
+from DataManager import DataManager
+from Classifier import Classifier
 
 data_dir = 'Data'
 keywords_file = 'Items.txt'
-no_images = 10
+no_images = 5
 image_format = 'jpg'
 
-downloader = Downloader(keywords_file,data_dir)
-downloader.download_images(no_images)
+data_manager = DataManager(keywords_file,data_dir,image_format)
+'''
+data_manager.download_images(no_images)
+data_manager.preprocess_images(100,100)
+'''
+data_manager.shuffle_training_data()
+data_manager.split_data(0.2)
 
-resizer = Standardizer(image_format,data_dir)
-resizer.resize_images(200,200)
+labeled_data = data_manager.return_train_test_data()
+
+classifier = Classifier((100,100),labeled_data)
+classifier.onehot_labels()
+classifier.train_nn(epochs = 5)

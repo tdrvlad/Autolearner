@@ -120,7 +120,14 @@ class DataManager:
 		test_data, test_labels = zip(*self.test_labeled_data)
 		train_data, train_labels = zip(*self.train_labeled_data)
 
-		return train_data, train_labels, test_data, test_labels
+		test_images = []
+		train_images = []
+		for item in test_data:
+			test_images.append(cv2.imread(item) / 255)
+		for item in train_data:
+			train_images.append(cv2.imread(item) / 255)
+
+		return train_images, train_labels, test_images, test_labels
 	
 
 if __name__ == '__main__':
