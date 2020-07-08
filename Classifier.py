@@ -15,13 +15,16 @@ class Classifier:
 		self.input_height, self.input_width = input_shape
 		self.train_data, self.train_labels, self.test_data, self.test_labels = labeled_data
 		
+		self.train_data = np.asarray(self.train_data)
+		self.test_data = np.asarray(self.test_data)
+
 		self.categories = list(set(self.train_labels + self.test_labels))
 
 	def onehot_labels(self):
 		
 		# integer encode
 		label_encoder = LabelEncoder()
-		integer_encoded = label_encoder.fit_transform(array(self.categories))
+		integer_encoded = label_encoder.fit_transform(list(self.categories))
 
 		# binary encode
 		onehot_encoder = OneHotEncoder(sparse=False)
@@ -30,23 +33,25 @@ class Classifier:
 
 		# Replace all labells with one-hot labels
 		self.train_onehot_labels = [onehot_encoded[self.categories.index(item)] for item in self.train_labels]
-		
+		self.test_onehot_labels = [onehot_encoded[self.categories.index(item)] for item in self.test_labels]
+
+		self.train_onehot_labels = np.vstack(self.train_onehot_labels)
+		self.test_onehot_labels = np.vstack(self.test_onehot_labels)
+				
 	def train_nn(self, epochs):	
 		
 		no_input_neurons = self.input_height * self.input_width
 		k = int(np.log(no_input_neurons)) + 1
 
-		print(self.train_data[0])
 		model = keras.Sequential([keras.layers.Flatten(input_shape = (self.input_height,self.input_width)),
 						#keras.layers.Dropout(0.5),
-		                keras.layers.Dense(2**k,activation = tf.nn.sigmoid),    
+		                keras.layers.Dense(128,activation = tf.nn.sigmoid),    
 		                #keras.layers.Dropout(0.2),   
 		                #keras.layers.Dense(2**(k-2),activation = tf.nn.sigmoid),                   
 		                keras.layers.Dense(len(self.categories),activation = tf.nn.softmax)])
-		model.compile(optimizer = 'adam',loss='sparse_categorical_crossentropy',metrics =['accuracy'])
+		model.compile(optimizer = 'adam', loss='categorical_crossentropy', metrics =['accuracy'])
 
-		model.fit(self.train_data, self.train_labels, epochs = epochs)
-
+		model.fit(self.train_data,self.train_onehot_labels, epochs = epochs)
 
 
 	def predict(self,input):

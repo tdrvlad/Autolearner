@@ -54,8 +54,7 @@ class DataManager:
 
 			for image in images:
 						
-				img = cv2.imread(image)
-				img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+				img = cv2.imread(image, 0) #0 paramtere for grayscale
 
 				try:
 					img_resized = cv2.resize(img, dsize=(self.height, self.width), interpolation=cv2.INTER_CUBIC)
@@ -81,7 +80,7 @@ class DataManager:
 
 			for image in images:
 										
-				img = cv2.imread(image)
+				img = cv2.imread(image, 0) #0 paramtere for grayscale
 
 				try:
 					img_mirror = cv2.flip(img, 1)
@@ -123,9 +122,9 @@ class DataManager:
 		test_images = []
 		train_images = []
 		for item in test_data:
-			test_images.append(cv2.imread(item) / 255)
+			test_images.append(cv2.imread(item, 0) / 255) #0 paramtere for grayscale
 		for item in train_data:
-			train_images.append(cv2.imread(item) / 255)
+			train_images.append(cv2.imread(item, 0) / 255) #0 paramtere for grayscale
 
 		return train_images, train_labels, test_images, test_labels
 	
